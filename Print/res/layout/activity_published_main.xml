@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/lay_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_action_bar_height"
+        layout="@layout/layout_title_bar" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_margin="8dp"
+        android:background="@null"
+        android:gravity="left|top"
+        android:hint="请输入需要加的水印..." >
+    </EditText>
+
+    <GridView
+        android:id="@+id/noScrollgridview"
+        android:layout_width="290dp"
+        android:layout_height="350dp"
+        android:layout_marginLeft="5dp"
+        android:horizontalSpacing="6dp"
+        android:numColumns="4"
+        android:scrollbars="none"
+        android:verticalSpacing="5dp" >
+    </GridView>
+
+</LinearLayout>

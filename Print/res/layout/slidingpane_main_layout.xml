@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#403f3f" />
+
+    </LinearLayout>
+
+    <com.vjiazhi.shuiyinwang.ui.view.ContentEnablePanelLayout
+        android:id="@+id/slidingpanellayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" >
+
+        <FrameLayout
+            android:id="@+id/slidingpane_menu"
+            android:layout_width="250dp"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/slidingpane_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.vjiazhi.shuiyinwang.ui.view.ContentEnablePanelLayout>
+
+</FrameLayout>
