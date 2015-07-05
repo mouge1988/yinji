@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_text_deep_gray" >
+    android:background="#ffffff" >
 
     <include
         android:id="@+id/lay_title_bar"
@@ -15,68 +15,110 @@
         android:layout_height="match_parent"
         android:layout_below="@id/lay_title_bar" >
 
-        <com.vjiazhi.shuiyinwang.ui.view.HorizontalListView
-            android:id="@+id/img_horizon_listview"
+        <LinearLayout
+            android:id="@+id/first_horizon_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/horizon_listview_height" >
-        </com.vjiazhi.shuiyinwang.ui.view.HorizontalListView>
+            android:layout_height="75dp"
+            android:background="@drawable/title_bg"
+            android:orientation="vertical" >
+
+            <com.vjiazhi.shuiyinwang.ui.view.HorizontalListView
+                android:id="@+id/img_horizon_listview"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/horizon_listview_height2"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="3dp" >
+            </com.vjiazhi.shuiyinwang.ui.view.HorizontalListView>
+        </LinearLayout>
 
         <com.vjiazhi.shuiyinwang.widgets.ZoomableImageView
             android:id="@+id/zoomable_imageview"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/img_horizon_listview2"
-            android:layout_below="@+id/img_horizon_listview"
-            android:background="@color/color_imgview_bg"
+            android:layout_above="@+id/second_horizon_layout"
+            android:layout_below="@+id/first_horizon_layout"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="1dp"
+            android:background="#cccccc"
             android:scaleType="matrix" />
 
-        <LinearLayout
-            android:id="@+id/layout_bottom"
+        <RelativeLayout
+            android:id="@+id/second_horizon_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical" >
+            android:background="@drawable/title_bg" >
 
-            <Button
+            <com.vjiazhi.shuiyinwang.ui.view.HorizontalListView
+                android:id="@+id/img_horizon_listview2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/shuiying"
-                android:text="立马水印" />
+                android:layout_height="@dimen/horizon_listview_height"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp" >
+            </com.vjiazhi.shuiyinwang.ui.view.HorizontalListView>
 
             <LinearLayout
+                android:id="@+id/layout_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:layout_below="@id/img_horizon_listview2"
+                android:orientation="vertical" >
 
-                <Button
-                    android:id="@+id/text"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="文字" />
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp" >
 
-                <Button
-                    android:id="@+id/color"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="颜色" />
+                    <Button
+                        android:id="@+id/shuiying"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/likeshuiyin_selector" />
+                </RelativeLayout>
 
-                <Button
-                    android:id="@+id/position"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/shezhilayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="位置" />
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+
+                    <Button
+                        android:id="@+id/color"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/color_selector" />
+
+                    <Button
+                        android:id="@+id/text"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/wenzi_selector" />
+
+                    <Button
+                        android:id="@+id/position"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/position_selector" />
+                </RelativeLayout>
             </LinearLayout>
-        </LinearLayout>
-
-        <com.vjiazhi.shuiyinwang.ui.view.HorizontalListView
-            android:id="@+id/img_horizon_listview2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/horizon_listview_height"
-            android:layout_above="@+id/layout_bottom" >
-        </com.vjiazhi.shuiyinwang.ui.view.HorizontalListView>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

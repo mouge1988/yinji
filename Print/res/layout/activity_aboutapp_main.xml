@@ -28,7 +28,7 @@
             android:layout_centerInParent="true"
             android:layout_toRightOf="@id/button_back"
             android:gravity="center"
-            android:text="秦刚简介"
+            android:text="关于印记"
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </RelativeLayout>

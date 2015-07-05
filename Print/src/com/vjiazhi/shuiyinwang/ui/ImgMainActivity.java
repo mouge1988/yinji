@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.R.color;
 import android.app.FragmentTransaction;
 
 import com.umeng.fb.FeedbackAgent;
@@ -28,6 +30,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.annotation.SuppressLint;
@@ -41,17 +44,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -64,6 +72,7 @@ public class ImgMainActivity extends Activity implements
 	Button m_btnLoadImg, m_btnSaveShare;
 	// LinearLayout m_layText, m_layColor, m_layPostion;
 	Button m_layText, m_layColor, m_layPostion, m_shuiYing;
+	RelativeLayout shezhi_Layout;
 	AlertDialog m_dlgLoadImg;
 	Context mContext;
 	private ZoomableImageView mImageView = null;
@@ -144,21 +153,21 @@ public class ImgMainActivity extends Activity implements
 
 			@Override
 			public void onPanelSlide(View panel, float slideOffset) {
-//				int contentMargin = (int) (slideOffset * maxMargin);
-//				FrameLayout.LayoutParams contentParams = contentFragment
-//						.getCurrentViewParams();
-//				contentParams.setMargins(0, contentMargin, 0, contentMargin);
-//				contentFragment.setCurrentViewPararms(contentParams);
-//
-//				float scale = 1 - ((1 - slideOffset) * maxMargin * 3)
-//						/ (float) displayMetrics.heightPixels;
-//				menuFragment.getCurrentView().setScaleX(scale);// 设置缩放的基准点
-//				menuFragment.getCurrentView().setScaleY(scale);// 设置缩放的基准点
-//				menuFragment.getCurrentView().setPivotX(0);// 设置缩放和选择的点
-//				menuFragment.getCurrentView().setPivotY(
-//						displayMetrics.heightPixels / 2);
-//				menuFragment.getCurrentView().setAlpha(slideOffset);
-//				contentFragment.getCurrentView().setAlpha(1);
+				// int contentMargin = (int) (slideOffset * maxMargin);
+				// FrameLayout.LayoutParams contentParams = contentFragment
+				// .getCurrentViewParams();
+				// contentParams.setMargins(0, contentMargin, 0, contentMargin);
+				// contentFragment.setCurrentViewPararms(contentParams);
+				//
+				// float scale = 1 - ((1 - slideOffset) * maxMargin * 3)
+				// / (float) displayMetrics.heightPixels;
+				// menuFragment.getCurrentView().setScaleX(scale);// 设置缩放的基准点
+				// menuFragment.getCurrentView().setScaleY(scale);// 设置缩放的基准点
+				// menuFragment.getCurrentView().setPivotX(0);// 设置缩放和选择的点
+				// menuFragment.getCurrentView().setPivotY(
+				// displayMetrics.heightPixels / 2);
+				// menuFragment.getCurrentView().setAlpha(slideOffset);
+				// contentFragment.getCurrentView().setAlpha(1);
 
 				// slidingPaneLayout.setEnabled(false);
 				// slidingPaneLayout.setFocusable(false);
@@ -513,13 +522,16 @@ public class ImgMainActivity extends Activity implements
 
 	@Override
 	public void hasDone() {
+		mContext = this;
+
 		contentView = contentFragment.getContentView();
 		m_btnLoadImg = (Button) contentView.findViewById(R.id.btn_load_img);
 		m_shuiYing = (Button) contentView.findViewById(R.id.shuiying);
+		shezhi_Layout = (RelativeLayout) contentView
+				.findViewById(R.id.shezhilayout);
 		mImageView = (ZoomableImageView) contentView
 				.findViewById(R.id.zoomable_imageview);
 		prepareVjiazhiFolder();
-		mContext = this;
 		StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
 		try {
 			Class smClass;
@@ -556,6 +568,34 @@ public class ImgMainActivity extends Activity implements
 				// 分享图片到微信朋友圈
 			}
 		});
+
+		final Animation animation = AnimationUtils.loadAnimation(this,
+				R.anim.slide_in);
+		final Animation animation2 = AnimationUtils.loadAnimation(this,
+				R.anim.slide_out);
+
+		// 然后再想要实现动画效果的控件上通过使用 startAnimation() 方法进行添加。
+
+		// 编写动画对象，并且获取自定应的动画样式
+
+		// animation=AnimationUtils.loadAnimation(this, R.anim.animation);
+
+		// m_shezhi.setOnClickListener(new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View arg0) {
+		// // TODO Auto-generated method stub
+		// L.l("=======4444=========have =====click===");
+		// if (shezhi_Layout.getVisibility() == View.GONE) {
+		// shezhi_Layout.setVisibility(View.VISIBLE);
+		// shezhi_Layout.startAnimation(animation);
+		// } else {
+		// shezhi_Layout.startAnimation(animation2);
+		// shezhi_Layout.setVisibility(View.GONE);
+		//
+		// }
+		// }
+		// });
 
 		m_layText = (Button) contentView.findViewById(R.id.text);
 		m_layText.setOnClickListener(new View.OnClickListener() {
@@ -624,13 +664,47 @@ public class ImgMainActivity extends Activity implements
 		m_shuiYing.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				new MyImgsProcessTask(ImgMainActivity.this)
-						.execute(MyAdapter.mSelectedImage);
+				if (MyAdapter.mSelectedImage.size() == 0) {
+					Toast.makeText(ImgMainActivity.this, "请先点击+添加图片",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					new MyImgsProcessTask(ImgMainActivity.this)
+							.execute(MyAdapter.mSelectedImage);
+				}
+			}
+		});
+
+		m_shuiYing.setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View arg0) {
+				// TODO Auto-generated method stub
+				if (shezhi_Layout.getVisibility() == View.GONE) {
+					shezhi_Layout.setVisibility(View.VISIBLE);
+					shezhi_Layout.startAnimation(animation);
+				} else {
+					shezhi_Layout.startAnimation(animation2);
+					shezhi_Layout.setVisibility(View.GONE);
+
+				}
+				return true;
 			}
 		});
 
 		initViews();
 	}
+
+	// public void animationShow(int mills, RelativeLayout r, int visible,
+	// Animation a) {
+	// long current = System.currentTimeMillis();
+	// long end = System.currentTimeMillis();
+	// r.startAnimation(a);
+	// while (end - current < mills) {
+	// end = System.currentTimeMillis();
+	// }
+	// r.setVisibility(visible);
+	//
+	// }
 
 	// 设置默认的图片
 	public void setPreviewView(int position) {
@@ -688,6 +762,7 @@ public class ImgMainActivity extends Activity implements
 					// MultiImagePreviewActivity.class);
 					// startActivity(intent);
 					setPreviewView(position);
+					
 				}
 
 			}
@@ -800,7 +875,7 @@ public class ImgMainActivity extends Activity implements
 						imgPath, 720, 1280);// 缩放图片显示
 
 				savedImg = ImageProcessor.createFinalBitmap(loadedImg,
-						mContext.getString(R.string.str_syw_test));
+						m_strWaterMarkInfo);
 
 				saveImgsAndOut(savedImg, ImgMainActivity.mMultiImgsSavePath,
 						ImgFileUtils.createFileName());

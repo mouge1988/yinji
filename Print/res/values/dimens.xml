@@ -7,7 +7,7 @@
     <dimen name="base_action_bar_title_size">25.0sp</dimen>
     <dimen name="thumnail_default_width">60dip</dimen>
     <dimen name="thumnail_default_height">60dip</dimen>
-    
     <dimen name="horizon_listview_height">65dip</dimen>
+    <dimen name="horizon_listview_height2">70dip</dimen>
 
 </resources>

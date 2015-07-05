@@ -7,7 +7,7 @@
         android:id="@+id/title_tupian"
         android:layout_width="match_parent"
         android:layout_height="@dimen/base_action_bar_height"
-        android:background="@drawable/title_bg"
+        android:background="#222222"
         android:orientation="horizontal" >
 
         <Button

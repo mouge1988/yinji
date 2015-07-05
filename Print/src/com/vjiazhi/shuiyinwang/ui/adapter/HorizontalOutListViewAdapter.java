@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class HorizontalOutListViewAdapter extends BaseAdapter {
@@ -69,6 +70,7 @@ public class HorizontalOutListViewAdapter extends BaseAdapter {
 			holder.mImage = (ImageView) convertView
 					.findViewById(R.id.img_list_out_item);
 			holder.mTitle = (TextView) convertView.findViewById(R.id.select);
+			holder.out_img_layout=(RelativeLayout)convertView.findViewById(R.id.img_out_layout);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -81,12 +83,13 @@ public class HorizontalOutListViewAdapter extends BaseAdapter {
 		if (position == mimgPath.size()) {
 			// holder.mImage.setImageBitmap(BitmapFactory.decodeResource(
 			// mContext.getResources(), R.drawable.icon_addpic_unfocused));
-			holder.mImage.setVisibility(View.INVISIBLE);
-			holder.mTitle.setVisibility(View.INVISIBLE);
+			// holder.mImage.setVisibility(View.INVISIBLE);
+			// holder.mTitle.setVisibility(View.INVISIBLE);
+			holder.out_img_layout.setVisibility(View.INVISIBLE);
 			
 		} else {
 			// holder.mTitle.setText(mTitles[position]);
-			holder.mImage.setVisibility(View.VISIBLE);
+			holder.out_img_layout.setVisibility(View.VISIBLE);
 			iconBitmap = getPropThumnail(mimgPath.get(position));
 			holder.mImage.setImageBitmap(iconBitmap);
 			if (selectHashMap.get(position).equalsIgnoreCase("yes")) {
@@ -101,6 +104,7 @@ public class HorizontalOutListViewAdapter extends BaseAdapter {
 	private static class ViewHolder {
 		private TextView mTitle;
 		private TextView unSelect;
+		private RelativeLayout out_img_layout;
 		private ImageView mImage;
 	}
 

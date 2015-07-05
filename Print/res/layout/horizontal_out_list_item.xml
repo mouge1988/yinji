@@ -5,6 +5,8 @@
     android:paddingBottom="2dip"
     android:paddingLeft="2dip"
     android:paddingRight="2dip"
+    android:background="#ffffff"
+    android:id="@+id/img_out_layout"
     android:paddingTop="2dip" >
 
     <ImageView
