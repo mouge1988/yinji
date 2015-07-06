@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.R.color;
@@ -44,6 +45,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
@@ -61,6 +63,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.vjiazhi.shuiyinwang.ui.view.*;
@@ -70,7 +73,6 @@ public class ImgMainActivity extends Activity implements
 		ContentFragment.InterfaceContentView, MenuFragment.UmengInterface {
 
 	Button m_btnLoadImg, m_btnSaveShare;
-	// LinearLayout m_layText, m_layColor, m_layPostion;
 	Button m_layText, m_layColor, m_layPostion, m_shuiYing;
 	RelativeLayout shezhi_Layout;
 	AlertDialog m_dlgLoadImg;
@@ -119,12 +121,8 @@ public class ImgMainActivity extends Activity implements
 	HorizontalListViewAdapter hListViewAdapter2;
 
 	FeedbackAgent mUmengFeedBack = null; // 友盟用户反馈组件
-
 	private View contentView = null;
 
-	// --------下面就是多图
-
-	// ================
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -134,13 +132,9 @@ public class ImgMainActivity extends Activity implements
 		slidingPaneLayout = (ContentEnablePanelLayout) findViewById(R.id.slidingpanellayout);
 		menuFragment = new MenuFragment();
 		contentFragment = new ContentFragment(this);
-
 		menuFragment.setUmengInterface(this);
-
 		mUmengFeedBack = new FeedbackAgent(this);
-		// check if the app developer has replied to the feedback or not.
 		mUmengFeedBack.sync();
-
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.slidingpane_menu, menuFragment);
@@ -148,44 +142,6 @@ public class ImgMainActivity extends Activity implements
 		transaction.commit();
 		maxMargin = displayMetrics.heightPixels / 10;
 		slidingPaneLayout.setEnabled(false);
-		// slidingPaneLayout.onTouchEvent(arg0)
-		slidingPaneLayout.setPanelSlideListener(new PanelSlideListener() {
-
-			@Override
-			public void onPanelSlide(View panel, float slideOffset) {
-				// int contentMargin = (int) (slideOffset * maxMargin);
-				// FrameLayout.LayoutParams contentParams = contentFragment
-				// .getCurrentViewParams();
-				// contentParams.setMargins(0, contentMargin, 0, contentMargin);
-				// contentFragment.setCurrentViewPararms(contentParams);
-				//
-				// float scale = 1 - ((1 - slideOffset) * maxMargin * 3)
-				// / (float) displayMetrics.heightPixels;
-				// menuFragment.getCurrentView().setScaleX(scale);// 设置缩放的基准点
-				// menuFragment.getCurrentView().setScaleY(scale);// 设置缩放的基准点
-				// menuFragment.getCurrentView().setPivotX(0);// 设置缩放和选择的点
-				// menuFragment.getCurrentView().setPivotY(
-				// displayMetrics.heightPixels / 2);
-				// menuFragment.getCurrentView().setAlpha(slideOffset);
-				// contentFragment.getCurrentView().setAlpha(1);
-
-				// slidingPaneLayout.setEnabled(false);
-				// slidingPaneLayout.setFocusable(false);
-			}
-
-			@Override
-			public void onPanelOpened(View panel) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPanelClosed(View panel) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		// setContentView(R.layout.activity_img_main);
 
 	}
 
@@ -210,11 +166,6 @@ public class ImgMainActivity extends Activity implements
 			LogPrint.logd(this, "VJIAZHI_PATH exists!");
 		}
 	}
-
-	/*
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
-	 * getMenuInflater().inflate(R.menu.activity_img_main, menu); return true; }
-	 */
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -244,35 +195,6 @@ public class ImgMainActivity extends Activity implements
 				mCurrentImg = mFirstLoadedImg; // xinghe add
 				mImageView.setImageBitmap(mFirstLoadedImg);
 				mIsImgUpdated = true;
-			} else if (requestCode == COLOR_REQUEST_CODE) {
-				try {
-					Bundle extras = data.getExtras();
-					MyConfig.setNewColor(extras.getInt("color"));
-					if ((!m_strWaterMarkInfo.isEmpty())
-							&& (mFirstLoadedImg != null)) {
-						mCurrentImg = ImageProcessor.createFinalBitmap(
-								mFirstLoadedImg, m_strWaterMarkInfo);
-						mImageView.setImageBitmap(mCurrentImg);
-						mIsImgUpdated = true;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (requestCode == POS_REQUEST_CODE) {
-				try {
-					Bundle extras = data.getExtras();
-					MyConfig.setNewPosition(extras.getInt("position"));
-
-					if ((!m_strWaterMarkInfo.isEmpty())
-							&& (mFirstLoadedImg != null)) {
-						mCurrentImg = ImageProcessor.createFinalBitmap(
-								mFirstLoadedImg, m_strWaterMarkInfo);
-						mImageView.setImageBitmap(mCurrentImg);
-						mIsImgUpdated = true;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 			}
 		}
 	}
@@ -464,6 +386,9 @@ public class ImgMainActivity extends Activity implements
 		super.onStart();
 	}
 
+	/**
+	 * 下面的函数没有被使用，标注！
+	 */
 	void showDialogLoadImg() {
 		if (m_dlgLoadImg == null) {
 			m_dlgLoadImg = new AlertDialog.Builder(mContext)
@@ -523,7 +448,6 @@ public class ImgMainActivity extends Activity implements
 	@Override
 	public void hasDone() {
 		mContext = this;
-
 		contentView = contentFragment.getContentView();
 		m_btnLoadImg = (Button) contentView.findViewById(R.id.btn_load_img);
 		m_shuiYing = (Button) contentView.findViewById(R.id.shuiying);
@@ -554,8 +478,6 @@ public class ImgMainActivity extends Activity implements
 		m_btnLoadImg.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				// showDialogLoadImg();
-				// go to image list add by fengyi
 				startImgFIleListActivity();
 				slidingPaneLayout.openPane();
 
@@ -568,35 +490,6 @@ public class ImgMainActivity extends Activity implements
 				// 分享图片到微信朋友圈
 			}
 		});
-
-		final Animation animation = AnimationUtils.loadAnimation(this,
-				R.anim.slide_in);
-		final Animation animation2 = AnimationUtils.loadAnimation(this,
-				R.anim.slide_out);
-
-		// 然后再想要实现动画效果的控件上通过使用 startAnimation() 方法进行添加。
-
-		// 编写动画对象，并且获取自定应的动画样式
-
-		// animation=AnimationUtils.loadAnimation(this, R.anim.animation);
-
-		// m_shezhi.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// // TODO Auto-generated method stub
-		// L.l("=======4444=========have =====click===");
-		// if (shezhi_Layout.getVisibility() == View.GONE) {
-		// shezhi_Layout.setVisibility(View.VISIBLE);
-		// shezhi_Layout.startAnimation(animation);
-		// } else {
-		// shezhi_Layout.startAnimation(animation2);
-		// shezhi_Layout.setVisibility(View.GONE);
-		//
-		// }
-		// }
-		// });
-
 		m_layText = (Button) contentView.findViewById(R.id.text);
 		m_layText.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -609,36 +502,48 @@ public class ImgMainActivity extends Activity implements
 							.findViewById(R.id.edtInput);
 					final AlertDialog.Builder builder = new AlertDialog.Builder(
 							mContext);
-					builder.setCancelable(false);
-
-					builder.setTitle(R.string.title_watermark_txt);
+					builder.setCancelable(true);
 					builder.setView(textEntryView);
-					builder.setPositiveButton(R.string.ok,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
+					final AlertDialog dialog = builder.show();
 
-									m_strWaterMarkInfo = edtInput.getText()
-											.toString();
-									if ((!m_strWaterMarkInfo.isEmpty())
-											&& (mFirstLoadedImg != null)) {
-										mCurrentImg = ImageProcessor
-												.createFinalBitmap(
-														mFirstLoadedImg,
-														m_strWaterMarkInfo);
-										mImageView.setImageBitmap(mCurrentImg);
-										mIsImgUpdated = true;
-									}
-								}
-							});
-					builder.setNegativeButton(R.string.cancel,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
+					Button sureButton = (Button) textEntryView
+							.findViewById(R.id.sure);
+					sureButton.setOnClickListener(new View.OnClickListener() {
 
+						@Override
+						public void onClick(View arg0) {
+							// TODO Auto-generated method stub
+							m_strWaterMarkInfo = edtInput.getText().toString();
+							if ((!m_strWaterMarkInfo.isEmpty())
+									&& (mFirstLoadedImg != null)) {
+								mCurrentImg = ImageProcessor.createFinalBitmap(
+										mFirstLoadedImg, m_strWaterMarkInfo);
+								mImageView.setImageBitmap(mCurrentImg);
+								mIsImgUpdated = true;
+
+								if (dialog != null) {
+									dialog.dismiss();
 								}
-							});
-					builder.show();
+							} else {
+								Toast.makeText(ImgMainActivity.this, "内容不能为空！",
+										Toast.LENGTH_SHORT).show();
+							}
+
+						}
+					});
+
+					Button cancelButton = (Button) textEntryView
+							.findViewById(R.id.cancel);
+					cancelButton.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View arg0) {
+							// TODO Auto-generated method stub
+							if (dialog != null) {
+								dialog.dismiss();
+							}
+						}
+					});
 				}
 			}
 		});
@@ -647,8 +552,7 @@ public class ImgMainActivity extends Activity implements
 		m_layColor.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(mContext, ColorSetActivity.class);
-				startActivityForResult(i, COLOR_REQUEST_CODE);
+				showColorDialog();
 			}
 		});
 
@@ -656,8 +560,7 @@ public class ImgMainActivity extends Activity implements
 		m_layPostion.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(mContext, PositionSetActivity.class);
-				startActivityForResult(i, POS_REQUEST_CODE);
+				showShezhiDialog();
 			}
 		});
 
@@ -674,37 +577,8 @@ public class ImgMainActivity extends Activity implements
 			}
 		});
 
-		m_shuiYing.setOnLongClickListener(new View.OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (shezhi_Layout.getVisibility() == View.GONE) {
-					shezhi_Layout.setVisibility(View.VISIBLE);
-					shezhi_Layout.startAnimation(animation);
-				} else {
-					shezhi_Layout.startAnimation(animation2);
-					shezhi_Layout.setVisibility(View.GONE);
-
-				}
-				return true;
-			}
-		});
-
 		initViews();
 	}
-
-	// public void animationShow(int mills, RelativeLayout r, int visible,
-	// Animation a) {
-	// long current = System.currentTimeMillis();
-	// long end = System.currentTimeMillis();
-	// r.startAnimation(a);
-	// while (end - current < mills) {
-	// end = System.currentTimeMillis();
-	// }
-	// r.setVisibility(visible);
-	//
-	// }
 
 	// 设置默认的图片
 	public void setPreviewView(int position) {
@@ -724,45 +598,24 @@ public class ImgMainActivity extends Activity implements
 		hListViewAdapter2 = new HorizontalListViewAdapter(
 				getApplicationContext(), MyAdapter.mSelectedImage);
 
-		// hListview.setAdapter(hListViewAdapter);
-
-		String picturePath = "";
 		if (MyAdapter.mSelectedImage.size() > 0) {
-			picturePath = MyAdapter.mSelectedImage.get(0);
+			String picturePath = MyAdapter.mSelectedImage.get(0);
 			mFirstLoadedImg = BitmapFactory.decodeFile(picturePath);
 			mCurrentImg = ImageProcessor.createFinalBitmap(mFirstLoadedImg,
 					m_strWaterMarkInfo);
 			mImageView.setImageBitmap(mCurrentImg);
 		}
-
-		// hListview.setOnItemClickListener(new OnItemClickListener() {
-		//
-		// @Override
-		// public void onItemClick(AdapterView<?> parent, View view,
-		// int position, long id) {
-		// // TODO Auto-generated method stub
-		// if (position == MyAdapter.mSelectedImage.size()) {
-		// startImgsFIleListActivity();
-		// }
-		// }
-		// });
-
 		hListview2.setAdapter(hListViewAdapter2);
-
 		hListview2.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				if (position == MyAdapter.mSelectedImage.size()) {
 					startImgsFIleListActivity();
 				} else {
-					// Intent intent = new Intent(getApplicationContext(),
-					// MultiImagePreviewActivity.class);
-					// startActivity(intent);
 					setPreviewView(position);
-					
+
 				}
 
 			}
@@ -828,13 +681,6 @@ public class ImgMainActivity extends Activity implements
 		return preName + "_out" + suffixName;
 	}
 
-	// private String getFileName(String fromPath){
-	// int sep = fromPath.lastIndexOf(File.separator);
-	//
-	//
-	// return fromPath.substring(sep);
-	// }
-
 	// process task
 	class MyImgsProcessTask extends AsyncTask<List, Integer, Boolean> {
 		ProgressDialog pdialog;
@@ -843,8 +689,6 @@ public class ImgMainActivity extends Activity implements
 
 		Context mContext;
 
-		// mFirstLoadedImg = BitmapFactory
-		// .decodeFile(m_strCameraImgPathName);
 		public MyImgsProcessTask(Context mcontext) {
 			this.mContext = mcontext;
 			pdialog = new ProgressDialog(mcontext);
@@ -867,7 +711,6 @@ public class ImgMainActivity extends Activity implements
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				String imgPath = (String) mlist[0].get(i);
@@ -931,7 +774,420 @@ public class ImgMainActivity extends Activity implements
 
 	@Override
 	public void onClickPosition(int position) {
-		// TODO Auto-generated method stub
 		mUmengFeedBack.startFeedbackActivity();
 	}
+
+	/************************************************************
+	 * 如下代码实现选择颜色的自定义Dialog
+	 * **********************************************************
+	 */
+
+	private ToggleButton myButton_01 = null;
+	private ToggleButton myButton_02 = null;
+	private ToggleButton myButton_03 = null;
+	private ToggleButton myButton_04 = null;
+	private ToggleButton myButton_05 = null;
+	private ToggleButton myButton_06 = null;
+	private ToggleButton myButton_07 = null;
+	private ToggleButton myButton_08 = null;
+	private ToggleButton myButton_09 = null;
+	private ToggleButton myButton_10 = null;
+	private ToggleButton myButton_11 = null;
+	private ToggleButton myButton_12 = null;
+	private ToggleButton myButton_13 = null;
+	private ToggleButton myButton_14 = null;
+	private ToggleButton myButton_15 = null;
+	private ToggleButton myButton_16 = null;
+	private ToggleButton myButton_17 = null;
+	private ToggleButton myButton_18 = null;
+	private ToggleButton myButton_19 = null;
+	private ToggleButton myButton_20 = null;
+	private ToggleButton myButton_21 = null;
+	private ToggleButton myButton_22 = null;
+	private ToggleButton myButton_23 = null;
+	private ToggleButton myButton_24 = null;
+	private ToggleButton myButton_25 = null;
+	private ToggleButton myButton_26 = null;
+	private ToggleButton myButton_27 = null;
+	private ToggleButton myButton_28 = null;
+	private ToggleButton myButton_29 = null;
+	private ToggleButton myButton_30 = null;
+	private ToggleButton myButton_31 = null;
+	private ToggleButton myButton_32 = null;
+	private ToggleButton myButton_33 = null;
+	private ToggleButton myButton_34 = null;
+	private ToggleButton myButton_35 = null;
+	private ToggleButton myButton_36 = null;
+
+	private Button myCancel = null;
+	private Button myConfirm = null;
+	int mColor;
+	private HashMap<Integer, Integer> mColorMap = new HashMap<Integer, Integer>();
+
+	private void showColorDialog() {
+		LayoutInflater inflater = LayoutInflater.from(mContext);
+		final View textEntryView = inflater.inflate(R.layout.color_selector,
+				null);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setCancelable(true);
+
+		builder.setView(textEntryView);
+		final AlertDialog dialog = builder.show();
+		dialog.getWindow().setGravity(Gravity.CENTER);
+		dialog.getWindow().setLayout(
+				android.view.WindowManager.LayoutParams.WRAP_CONTENT,
+				android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+
+		myButton_01 = (ToggleButton) textEntryView.findViewById(R.id.button_01);
+		// myButton_01.setBackgroundColor(Color.RED);
+		mColorMap.put(R.id.button_01, 0xFFFFFFCC);
+		myButton_01.setOnClickListener(new myColorOnClickListener());
+
+		myButton_02 = (ToggleButton) textEntryView.findViewById(R.id.button_02);
+		mColorMap.put(R.id.button_02, 0xFF66FFCC);
+		myButton_02.setOnClickListener(new myColorOnClickListener());
+
+		myButton_03 = (ToggleButton) textEntryView.findViewById(R.id.button_03);
+		mColorMap.put(R.id.button_03, 0xFFCCFFFF);
+		myButton_03.setOnClickListener(new myColorOnClickListener());
+
+		myButton_04 = (ToggleButton) textEntryView.findViewById(R.id.button_04);
+		mColorMap.put(R.id.button_04, 0xFFFFCCFF);
+		myButton_04.setOnClickListener(new myColorOnClickListener());
+
+		myButton_05 = (ToggleButton) textEntryView.findViewById(R.id.button_05);
+		mColorMap.put(R.id.button_05, 0xFF0099FF);
+		myButton_05.setOnClickListener(new myColorOnClickListener());
+
+		myButton_06 = (ToggleButton) textEntryView.findViewById(R.id.button_06);
+		mColorMap.put(R.id.button_06, 0xFFFF9966);
+		myButton_06.setOnClickListener(new myColorOnClickListener());
+
+		myButton_07 = (ToggleButton) textEntryView.findViewById(R.id.button_07);
+		mColorMap.put(R.id.button_07, 0xFFFFFF99);
+		myButton_07.setOnClickListener(new myColorOnClickListener());
+
+		myButton_08 = (ToggleButton) textEntryView.findViewById(R.id.button_08);
+		mColorMap.put(R.id.button_08, 0xFF33FF99);
+		myButton_08.setOnClickListener(new myColorOnClickListener());
+
+		myButton_09 = (ToggleButton) textEntryView.findViewById(R.id.button_09);
+		mColorMap.put(R.id.button_09, 0xFF99FFFF);
+		myButton_09.setOnClickListener(new myColorOnClickListener());
+
+		myButton_10 = (ToggleButton) textEntryView.findViewById(R.id.button_10);
+		mColorMap.put(R.id.button_10, 0xFFFF99FF);
+		myButton_10.setOnClickListener(new myColorOnClickListener());
+
+		myButton_11 = (ToggleButton) textEntryView.findViewById(R.id.button_11);
+		mColorMap.put(R.id.button_11, 0xFF0066FF);
+		myButton_11.setOnClickListener(new myColorOnClickListener());
+
+		myButton_12 = (ToggleButton) textEntryView.findViewById(R.id.button_12);
+		mColorMap.put(R.id.button_12, 0xFFFF6633);
+		myButton_12.setOnClickListener(new myColorOnClickListener());
+
+		myButton_13 = (ToggleButton) textEntryView.findViewById(R.id.button_13);
+		mColorMap.put(R.id.button_13, 0xFFFFFF00);
+		myButton_13.setOnClickListener(new myColorOnClickListener());
+
+		myButton_14 = (ToggleButton) textEntryView.findViewById(R.id.button_14);
+		mColorMap.put(R.id.button_14, 0xFF00FF00);
+		myButton_14.setOnClickListener(new myColorOnClickListener());
+
+		myButton_15 = (ToggleButton) textEntryView.findViewById(R.id.button_15);
+		mColorMap.put(R.id.button_15, 0xFF00FFFF);
+		myButton_15.setOnClickListener(new myColorOnClickListener());
+
+		myButton_16 = (ToggleButton) textEntryView.findViewById(R.id.button_16);
+		mColorMap.put(R.id.button_16, 0xFFFF66FF);
+		myButton_16.setOnClickListener(new myColorOnClickListener());
+
+		myButton_17 = (ToggleButton) textEntryView.findViewById(R.id.button_17);
+		mColorMap.put(R.id.button_17, 0xFF0000FF);
+		myButton_17.setOnClickListener(new myColorOnClickListener());
+
+		myButton_18 = (ToggleButton) textEntryView.findViewById(R.id.button_18);
+		mColorMap.put(R.id.button_18, 0xFFFF3300);
+		myButton_18.setOnClickListener(new myColorOnClickListener());
+
+		myButton_19 = (ToggleButton) textEntryView.findViewById(R.id.button_19);
+		mColorMap.put(R.id.button_19, 0xFFCCCC00);
+		myButton_19.setOnClickListener(new myColorOnClickListener());
+
+		myButton_20 = (ToggleButton) textEntryView.findViewById(R.id.button_20);
+		mColorMap.put(R.id.button_20, 0xFF009900);
+		myButton_20.setOnClickListener(new myColorOnClickListener());
+
+		myButton_21 = (ToggleButton) textEntryView.findViewById(R.id.button_21);
+		mColorMap.put(R.id.button_21, 0xFF00CCFF);
+		myButton_21.setOnClickListener(new myColorOnClickListener());
+
+		myButton_22 = (ToggleButton) textEntryView.findViewById(R.id.button_22);
+		mColorMap.put(R.id.button_22, 0xFFCC33FF);
+		myButton_22.setOnClickListener(new myColorOnClickListener());
+
+		myButton_23 = (ToggleButton) textEntryView.findViewById(R.id.button_23);
+		mColorMap.put(R.id.button_23, 0xFF0000CC);
+		myButton_23.setOnClickListener(new myColorOnClickListener());
+
+		myButton_24 = (ToggleButton) textEntryView.findViewById(R.id.button_24);
+		mColorMap.put(R.id.button_24, 0xFFCC3300);
+		myButton_24.setOnClickListener(new myColorOnClickListener());
+
+		myButton_25 = (ToggleButton) textEntryView.findViewById(R.id.button_25);
+		mColorMap.put(R.id.button_25, 0xFF999900);
+		myButton_25.setOnClickListener(new myColorOnClickListener());
+
+		myButton_26 = (ToggleButton) textEntryView.findViewById(R.id.button_26);
+		mColorMap.put(R.id.button_26, 0xFF006633);
+		myButton_26.setOnClickListener(new myColorOnClickListener());
+
+		myButton_27 = (ToggleButton) textEntryView.findViewById(R.id.button_27);
+		mColorMap.put(R.id.button_27, 0xFF0099FF);
+		myButton_27.setOnClickListener(new myColorOnClickListener());
+
+		myButton_28 = (ToggleButton) textEntryView.findViewById(R.id.button_28);
+		mColorMap.put(R.id.button_28, Color.rgb(166, 0, 221));// ԭ�е���ɫ����
+		myButton_28.setOnClickListener(new myColorOnClickListener());
+
+		myButton_29 = (ToggleButton) textEntryView.findViewById(R.id.button_29);
+		mColorMap.put(R.id.button_29, 0xFF000066);
+		myButton_29.setOnClickListener(new myColorOnClickListener());
+
+		myButton_30 = (ToggleButton) textEntryView.findViewById(R.id.button_30);
+		mColorMap.put(R.id.button_30, 0xFF990000);
+		myButton_30.setOnClickListener(new myColorOnClickListener());
+
+		myButton_31 = (ToggleButton) textEntryView.findViewById(R.id.button_31);
+		mColorMap.put(R.id.button_31, 0xFFFFFFFF);
+		myButton_31.setOnClickListener(new myColorOnClickListener());
+
+		myButton_32 = (ToggleButton) textEntryView.findViewById(R.id.button_32);
+		mColorMap.put(R.id.button_32, 0xFFCCCCCC);
+		myButton_32.setOnClickListener(new myColorOnClickListener());
+
+		myButton_33 = (ToggleButton) textEntryView.findViewById(R.id.button_33);
+		mColorMap.put(R.id.button_33, 0xFF999999);
+		myButton_33.setOnClickListener(new myColorOnClickListener());
+
+		myButton_34 = (ToggleButton) textEntryView.findViewById(R.id.button_34);
+		mColorMap.put(R.id.button_34, 0xFF666666);
+		myButton_34.setOnClickListener(new myColorOnClickListener());
+
+		myButton_35 = (ToggleButton) textEntryView.findViewById(R.id.button_35);
+		mColorMap.put(R.id.button_35, 0xFF333333);
+		myButton_35.setOnClickListener(new myColorOnClickListener());
+
+		myButton_36 = (ToggleButton) textEntryView.findViewById(R.id.button_36);
+		mColorMap.put(R.id.button_36, 0xFF000000);
+		myButton_36.setOnClickListener(new myColorOnClickListener());
+
+		myCancel = (Button) textEntryView.findViewById(R.id.cancel);
+
+		myConfirm = (Button) textEntryView.findViewById(R.id.confirm);
+		myConfirm.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				MyConfig.setNewColor(mColor);
+				if ((!m_strWaterMarkInfo.isEmpty())
+						&& (mFirstLoadedImg != null)) {
+					mCurrentImg = ImageProcessor.createFinalBitmap(
+							mFirstLoadedImg, m_strWaterMarkInfo);
+					mImageView.setImageBitmap(mCurrentImg);
+					mIsImgUpdated = true;
+				}
+				if (dialog != null) {
+					dialog.dismiss();
+				}
+			}
+		});
+
+		myCancel.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				if (dialog != null) {
+					dialog.dismiss();
+				}
+			}
+		});
+
+	}
+
+	class myColorOnClickListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+
+			changeColor(v);
+
+		}
+	}
+
+	private void changeColor(View v) {
+		myButton_01.setChecked(false);
+		myButton_02.setChecked(false);
+		myButton_03.setChecked(false);
+		myButton_04.setChecked(false);
+		myButton_05.setChecked(false);
+		myButton_06.setChecked(false);
+		myButton_07.setChecked(false);
+		myButton_08.setChecked(false);
+		myButton_09.setChecked(false);
+		myButton_10.setChecked(false);
+		myButton_11.setChecked(false);
+		myButton_12.setChecked(false);
+		myButton_13.setChecked(false);
+		myButton_14.setChecked(false);
+		myButton_15.setChecked(false);
+		myButton_16.setChecked(false);
+		myButton_17.setChecked(false);
+		myButton_18.setChecked(false);
+		myButton_19.setChecked(false);
+		myButton_20.setChecked(false);
+		myButton_21.setChecked(false);
+		myButton_22.setChecked(false);
+		myButton_23.setChecked(false);
+		myButton_24.setChecked(false);
+		myButton_25.setChecked(false);
+		myButton_26.setChecked(false);
+		myButton_27.setChecked(false);
+		myButton_28.setChecked(false);
+		myButton_29.setChecked(false);
+		myButton_30.setChecked(false);
+		myButton_31.setChecked(false);
+		myButton_32.setChecked(false);
+		myButton_33.setChecked(false);
+		myButton_34.setChecked(false);
+		myButton_35.setChecked(false);
+		myButton_36.setChecked(false);
+		((ToggleButton) v).setChecked(true);
+		mColor = mColorMap.get(v.getId());
+	}
+
+	/*************************************************************
+	 * 以下代碼為位置設置 ***********************************************************
+	 */
+
+	private ToggleButton myButton_011 = null;
+	private ToggleButton myButton_021 = null;
+	private ToggleButton myButton_031 = null;
+	private ToggleButton myButton_041 = null;
+	private ToggleButton myButton_051 = null;
+	private ToggleButton myButton_061 = null;
+	private ToggleButton myButton_071 = null;
+	private ToggleButton myButton_081 = null;
+	private ToggleButton myButton_091 = null;
+
+	private Button myCancel1 = null;
+	private Button myConfirm1 = null;
+
+	int mPosIndex = 8;// 0-8,
+	private HashMap<Integer, Integer> mColorMap1 = new HashMap<Integer, Integer>();
+
+	private void showShezhiDialog() {
+
+		LayoutInflater inflater = LayoutInflater.from(mContext);
+		final View textEntryView = inflater.inflate(R.layout.position_selector,
+				null);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setCancelable(true);
+
+		builder.setView(textEntryView);
+		final AlertDialog dialog = builder.show();
+		dialog.getWindow().setGravity(Gravity.CENTER);
+		dialog.getWindow().setLayout(
+				android.view.WindowManager.LayoutParams.WRAP_CONTENT,
+				android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+
+		myButton_01 = (ToggleButton) textEntryView.findViewById(R.id.button_01);
+		mColorMap.put(R.id.button_01, 0);
+		myButton_01.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_02 = (ToggleButton) textEntryView.findViewById(R.id.button_02);
+		mColorMap.put(R.id.button_02, 1);
+		myButton_02.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_03 = (ToggleButton) textEntryView.findViewById(R.id.button_03);
+		mColorMap.put(R.id.button_03, 2);
+		myButton_03.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_04 = (ToggleButton) textEntryView.findViewById(R.id.button_04);
+		mColorMap.put(R.id.button_04, 3);
+		myButton_04.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_05 = (ToggleButton) textEntryView.findViewById(R.id.button_05);
+		mColorMap.put(R.id.button_05, 4);
+		myButton_05.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_06 = (ToggleButton) textEntryView.findViewById(R.id.button_06);
+		mColorMap.put(R.id.button_06, 5);
+		myButton_06.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_07 = (ToggleButton) textEntryView.findViewById(R.id.button_07);
+		mColorMap.put(R.id.button_07, 6);
+		myButton_07.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_08 = (ToggleButton) textEntryView.findViewById(R.id.button_08);
+		mColorMap.put(R.id.button_08, 7);
+		myButton_08.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_09 = (ToggleButton) textEntryView.findViewById(R.id.button_09);
+		mColorMap.put(R.id.button_09, 8);
+		myButton_09.setOnClickListener(new MyShezhiOnClickListener());
+		myCancel = (Button) textEntryView.findViewById(R.id.cancel);
+		myCancel.setOnClickListener(new MyShezhiOnClickListener());
+		myConfirm = (Button) textEntryView.findViewById(R.id.confirm);
+		myConfirm.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				MyConfig.setNewPosition(mPosIndex);
+				if ((!m_strWaterMarkInfo.isEmpty())
+						&& (mFirstLoadedImg != null)) {
+					mCurrentImg = ImageProcessor.createFinalBitmap(
+							mFirstLoadedImg, m_strWaterMarkInfo);
+					mImageView.setImageBitmap(mCurrentImg);
+					mIsImgUpdated = true;
+				}
+
+				if (dialog != null) {
+					dialog.dismiss();
+				}
+			}
+		});
+
+		myCancel.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+
+				if (dialog != null) {
+					dialog.dismiss();
+				}
+			}
+		});
+
+	}
+
+	class MyShezhiOnClickListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View arg0) {
+			changePos(arg0);
+		}
+	}
+
+	private void changePos(View v) {
+		myButton_01.setChecked(false);
+		myButton_02.setChecked(false);
+		myButton_03.setChecked(false);
+		myButton_04.setChecked(false);
+		myButton_05.setChecked(false);
+		myButton_06.setChecked(false);
+		myButton_07.setChecked(false);
+		myButton_08.setChecked(false);
+		myButton_09.setChecked(false);
+
+		((ToggleButton) v).setChecked(true);
+		mPosIndex = mColorMap.get(v.getId());
+	}
+
 }

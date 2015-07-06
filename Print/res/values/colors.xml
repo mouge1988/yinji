@@ -16,6 +16,9 @@
     <color name="none_color">#00000000</color>
     <color name="bule_overlay">#660D92DD</color>
     
+    <!-- button press color -->
+    <color name="button_normal">#666666</color>
+     <color name="button_down">#cccccc</color>
     <!-- From: file:/Users/lucas/dev/workspace/umeng/feedback/umeng-feedback-android/sdk/src/main/res/values/umeng_fb_color.xml -->
     <eat-comment />
 
