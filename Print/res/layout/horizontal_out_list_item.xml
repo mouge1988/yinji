@@ -3,7 +3,7 @@
     android:id="@+id/img_out_layout"
     android:layout_width="62dp"
     android:layout_height="62dp"
-    android:background="#cccccc"
+    android:background="#fff"
     android:padding="2dp" >
 
     <ImageView
