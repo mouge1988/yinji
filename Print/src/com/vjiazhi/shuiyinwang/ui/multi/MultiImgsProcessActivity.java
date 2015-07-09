@@ -27,12 +27,10 @@ public class MultiImgsProcessActivity extends Activity {
 	ArrayList<String> listfileOut = new ArrayList<String>();
 
 	/*
-	 * fengyi add 
-	 * image compress quality percent
-	 * set 50% for temporary
-	 * 
+	 * fengyi add image compress quality percent set 50% for temporary
 	 */
 	private final static int IMAGE_QUALITY_PERCENT = 50;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -41,18 +39,18 @@ public class MultiImgsProcessActivity extends Activity {
 		listView = (ListView) findViewById(R.id.listView1);
 		Bundle bundle = getIntent().getExtras();
 
-//		if (bundle != null) {
-			//if (bundle.getStringArrayList("files") != null) {
-			///	listfile = bundle.getStringArrayList("files");
-//				listView.setVisibility(View.VISIBLE);
-//				ArrayAdapter<String> arryAdapter = new ArrayAdapter<String>(
-//						this, android.R.layout.simple_list_item_1, listfile);
-//				listView.setAdapter(arryAdapter);
-				// start processtask
-				new MyImgsProcessTask(this).execute(MyAdapter.mSelectedImage);
-				// combineSavedFileName(listfile.get(0));
-			//}
-//		}
+		// if (bundle != null) {
+		// if (bundle.getStringArrayList("files") != null) {
+		// / listfile = bundle.getStringArrayList("files");
+		// listView.setVisibility(View.VISIBLE);
+		// ArrayAdapter<String> arryAdapter = new ArrayAdapter<String>(
+		// this, android.R.layout.simple_list_item_1, listfile);
+		// listView.setAdapter(arryAdapter);
+		// start processtask
+		new MyImgsProcessTask(this).execute(MyAdapter.mSelectedImage);
+		// combineSavedFileName(listfile.get(0));
+		// }
+		// }
 
 	}
 
@@ -92,7 +90,7 @@ public class MultiImgsProcessActivity extends Activity {
 			fOut.close();
 		} catch (IOException e) {
 			return false;
-		}finally{
+		} finally {
 			bitmap.recycle();
 		}
 
@@ -122,6 +120,7 @@ public class MultiImgsProcessActivity extends Activity {
 		Bitmap savedImg;
 
 		Context mContext;
+
 		// mFirstLoadedImg = BitmapFactory
 		// .decodeFile(m_strCameraImgPathName);
 		public MyImgsProcessTask(Context mcontext) {
@@ -150,14 +149,17 @@ public class MultiImgsProcessActivity extends Activity {
 					e.printStackTrace();
 				}
 				String imgPath = (String) mlist[0].get(i);
-				loadedImg = ImageLoader.decodeSampledBitmapFromResource(imgPath, 720, 1280);//缩放图片显示
+				loadedImg = ImageLoader.decodeSampledBitmapFromResource(
+						imgPath, 720, 1280);// 缩放图片显示
 
-				savedImg = ImageProcessor.createFinalBitmap(loadedImg, mContext.getString(R.string.str_syw_test));
+				savedImg = ImageProcessor.createFinalBitmap(
+						MultiImgsProcessActivity.this, loadedImg,
+						mContext.getString(R.string.str_syw_test));
 
 				saveImgsAndOut(savedImg, ImgMainActivity.mMultiImgsSavePath,
 						ImgFileUtils.createFileName());
-				//progress
-				publishProgress((int)(i*100.0/sum));
+				// progress
+				publishProgress((int) (i * 100.0 / sum));
 			}
 			return null;
 		}

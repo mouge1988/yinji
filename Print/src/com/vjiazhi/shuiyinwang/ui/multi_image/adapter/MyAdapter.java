@@ -56,8 +56,8 @@ public class MyAdapter extends CommonAdapter<String> {
 		// 设置no_pic
 		helper.setImageResource(R.id.id_item_image, R.drawable.pictures_no);
 		// 设置no_selected
-		helper.setImageResource(R.id.id_item_select,
-				R.drawable.picture_unselected);
+//		helper.setImageResource(R.id.id_item_select,
+//				R.drawable.pics_unselected);
 
 		String tempFileString = "";
 		if (mDirPath.equalsIgnoreCase("")) {
@@ -78,10 +78,10 @@ public class MyAdapter extends CommonAdapter<String> {
 		final ImageView mSelect = helper.getView(R.id.id_item_select);
 
 		if (mSelectedImage.contains(dirFileString)) {
-			mSelect.setImageResource(R.drawable.pictures_selected);
+			mSelect.setBackgroundResource(R.drawable.pics_selected);
 			mImageView.setColorFilter(Color.parseColor("#77000000"));
 		} else {
-			mSelect.setImageResource(R.drawable.picture_unselected);
+			mSelect.setBackgroundResource(R.drawable.pics_unselected);
 		}
 
 		mImageView.setColorFilter(null);
@@ -97,12 +97,12 @@ public class MyAdapter extends CommonAdapter<String> {
 				
 				if (mSelectedImage.contains(dirFileString)) {
 					mSelectedImage.remove(dirFileString);
-					mSelect.setImageResource(R.drawable.picture_unselected);
+					mSelect.setBackgroundResource(R.drawable.pics_unselected);
 					mImageView.setColorFilter(null);
 				} else
 				{
 					mSelectedImage.add(dirFileString);
-					mSelect.setImageResource(R.drawable.pictures_selected);
+					mSelect.setBackgroundResource(R.drawable.pics_selected);
 					mImageView.setColorFilter(Color.parseColor("#77000000"));
 				}
 				if (adapterItemListener != null) {
@@ -116,7 +116,7 @@ public class MyAdapter extends CommonAdapter<String> {
 		 * 已经选择过的图片，显示出选择过的效果
 		 */
 		if (mSelectedImage.contains(mDirPath + "/" + item)) {
-			mSelect.setImageResource(R.drawable.pictures_selected);
+			mSelect.setBackgroundResource(R.drawable.pics_selected);
 			mImageView.setColorFilter(Color.parseColor("#77000000"));
 		}
 	}

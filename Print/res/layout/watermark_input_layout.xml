@@ -3,57 +3,52 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#ffffff"
-    android:paddingBottom="5dp" >
+    android:paddingBottom="20dp" >
 
-    <TextView
-        android:id="@+id/shuiyin"
+    <RelativeLayout
+        android:id="@+id/bottom_btn"
         android:layout_width="fill_parent"
-        android:layout_height="45dp"
-        android:background="#666666"
-        android:gravity="center"
-        android:text="水印文本"
-        android:textColor="#fff"
-        android:textSize="18dp" />
+        android:layout_height="wrap_content"
+        android:background="#0a9398" >
+
+        <TextView
+            android:id="@+id/shuiyin"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:text="水印文本"
+            android:textColor="#fff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/cancel_selector" />
+
+        <Button
+            android:id="@+id/sure"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/sure_selector" />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/edtInput"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/base_action_bar_height"
-        android:layout_below="@+id/shuiyin"
+        android:layout_below="@+id/bottom_btn"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edtInput"
-        android:layout_margin="5dp"
-        android:orientation="horizontal"
-        android:weightSum="1" >
-
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="0.5"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/dialog_button_selector"
-            android:text="取消" >
-        </Button>
-
-        <Button
-            android:id="@+id/sure"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="0.5"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/dialog_button_selector"
-            android:text="确定" >
-        </Button>
-    </LinearLayout>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#0000aa"
+        android:textColorHint="#000000" />
 
 </RelativeLayout>

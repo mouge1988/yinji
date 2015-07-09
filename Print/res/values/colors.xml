@@ -7,7 +7,7 @@
     <color name="color_title_menu">#343434</color>
     <color name="color_bottom_text_normal">#9da0a4</color>
     <color name="color_bottom_text_press">#4f9ef6</color>
-    <color name="color_normal_gray">#888888</color>
+    <color name="color_normal_gray">#cccccc</color>
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_text_deep_gray">#222222</color>
@@ -17,8 +17,8 @@
     <color name="bule_overlay">#660D92DD</color>
     
     <!-- button press color -->
-    <color name="button_normal">#666666</color>
-     <color name="button_down">#cccccc</color>
+    <color name="button_normal">#ffffff</color>
+     <color name="button_down">#222222</color>
     <!-- From: file:/Users/lucas/dev/workspace/umeng/feedback/umeng-feedback-android/sdk/src/main/res/values/umeng_fb_color.xml -->
     <eat-comment />
 

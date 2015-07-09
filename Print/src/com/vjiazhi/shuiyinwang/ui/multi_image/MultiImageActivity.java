@@ -71,7 +71,8 @@ public class MultiImageActivity extends Activity implements OnImageDirSelected,
 
 	private RelativeLayout mBottomLy;
 
-	private Button btnChooseDir;
+	private TextView btnChooseDir;
+	private RelativeLayout all_pics_layout;
 	private Button btnReviewImages;
 	// private TextView mImageCount;
 	private Button btnComfirm;
@@ -323,13 +324,11 @@ public class MultiImageActivity extends Activity implements OnImageDirSelected,
 			}
 		});
 
-		((TextView) findViewById(R.id.picture_title)).setText(R.string.xiangce);
 		mGirdView = (GridView) findViewById(R.id.id_gridView);
-		btnChooseDir = (Button) findViewById(R.id.btn_choose_dir);
-		// mImageCount = (TextView) findViewById(R.id.id_total_count);
+		all_pics_layout = (RelativeLayout) findViewById(R.id.all_pics_layout);
+		btnChooseDir = (TextView) findViewById(R.id.btn_choose_dir);
 		btnReviewImages = (Button) findViewById(R.id.btn_review_images);
 		mBottomLy = (RelativeLayout) findViewById(R.id.id_bottom_ly);
-		btnReviewImages.setText("预览");
 		btnReviewImages.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -347,7 +346,7 @@ public class MultiImageActivity extends Activity implements OnImageDirSelected,
 		/**
 		 * 为底部的布局设置点击事件，弹出popupWindow
 		 */
-		btnChooseDir.setOnClickListener(new OnClickListener() {
+		all_pics_layout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mListImageDirPopupWindow

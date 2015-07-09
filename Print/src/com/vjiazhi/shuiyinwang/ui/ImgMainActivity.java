@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import android.R.color;
 import android.app.FragmentTransaction;
@@ -29,6 +31,8 @@ import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v4.widget.SlidingPaneLayout.PanelSlideListener;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -55,6 +59,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -128,6 +133,14 @@ public class ImgMainActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+		if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+			// 透明状态栏
+			getWindow().addFlags(
+					WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			// 透明导航栏
+
+		}
+
 		setContentView(R.layout.slidingpane_main_layout);
 		slidingPaneLayout = (ContentEnablePanelLayout) findViewById(R.id.slidingpanellayout);
 		menuFragment = new MenuFragment();
@@ -142,6 +155,7 @@ public class ImgMainActivity extends Activity implements
 		transaction.commit();
 		maxMargin = displayMetrics.heightPixels / 10;
 		slidingPaneLayout.setEnabled(false);
+		m_strWaterMarkInfo = MyConfig.getNewText(ImgMainActivity.this);
 
 	}
 
@@ -494,57 +508,59 @@ public class ImgMainActivity extends Activity implements
 		m_layText.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (mFirstLoadedImg != null) {
-					LayoutInflater inflater = LayoutInflater.from(mContext);
-					final View textEntryView = inflater.inflate(
-							R.layout.watermark_input_layout, null);
-					final EditText edtInput = (EditText) textEntryView
-							.findViewById(R.id.edtInput);
-					final AlertDialog.Builder builder = new AlertDialog.Builder(
-							mContext);
-					builder.setCancelable(true);
-					builder.setView(textEntryView);
-					final AlertDialog dialog = builder.show();
+				LayoutInflater inflater = LayoutInflater.from(mContext);
+				final View textEntryView = inflater.inflate(
+						R.layout.watermark_input_layout, null);
+				final EditText edtInput = (EditText) textEntryView
+						.findViewById(R.id.edtInput);
+				final AlertDialog.Builder builder = new AlertDialog.Builder(
+						mContext);
+				builder.setCancelable(true);
+				builder.setView(textEntryView);
+				final AlertDialog dialog = builder.show();
+				edtInput.setText(MyConfig.getNewText(ImgMainActivity.this));
+				Button sureButton = (Button) textEntryView
+						.findViewById(R.id.sure);
+				sureButton.setOnClickListener(new View.OnClickListener() {
 
-					Button sureButton = (Button) textEntryView
-							.findViewById(R.id.sure);
-					sureButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						m_strWaterMarkInfo = edtInput.getText().toString();
+						if ((!m_strWaterMarkInfo.isEmpty())) {
 
-						@Override
-						public void onClick(View arg0) {
-							// TODO Auto-generated method stub
-							m_strWaterMarkInfo = edtInput.getText().toString();
-							if ((!m_strWaterMarkInfo.isEmpty())
-									&& (mFirstLoadedImg != null)) {
+							MyConfig.setNewText(ImgMainActivity.this,
+									m_strWaterMarkInfo);
+							if (mFirstLoadedImg != null) {
 								mCurrentImg = ImageProcessor.createFinalBitmap(
-										mFirstLoadedImg, m_strWaterMarkInfo);
+										ImgMainActivity.this, mFirstLoadedImg,
+										m_strWaterMarkInfo);
 								mImageView.setImageBitmap(mCurrentImg);
 								mIsImgUpdated = true;
-
-								if (dialog != null) {
-									dialog.dismiss();
-								}
-							} else {
-								Toast.makeText(ImgMainActivity.this, "内容不能为空！",
-										Toast.LENGTH_SHORT).show();
 							}
-
-						}
-					});
-
-					Button cancelButton = (Button) textEntryView
-							.findViewById(R.id.cancel);
-					cancelButton.setOnClickListener(new View.OnClickListener() {
-
-						@Override
-						public void onClick(View arg0) {
-							// TODO Auto-generated method stub
 							if (dialog != null) {
 								dialog.dismiss();
 							}
+						} else {
+							Toast.makeText(ImgMainActivity.this, "内容不能为空！",
+									Toast.LENGTH_SHORT).show();
 						}
-					});
-				}
+
+					}
+				});
+
+				Button cancelButton = (Button) textEntryView
+						.findViewById(R.id.cancel);
+				cancelButton.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						if (dialog != null) {
+							dialog.dismiss();
+						}
+					}
+				});
 			}
 		});
 
@@ -584,8 +600,8 @@ public class ImgMainActivity extends Activity implements
 	public void setPreviewView(int position) {
 		String picturePath = MyAdapter.mSelectedImage.get(position);
 		mFirstLoadedImg = BitmapFactory.decodeFile(picturePath);
-		mCurrentImg = ImageProcessor.createFinalBitmap(mFirstLoadedImg,
-				m_strWaterMarkInfo);
+		mCurrentImg = ImageProcessor.createFinalBitmap(ImgMainActivity.this,
+				mFirstLoadedImg, m_strWaterMarkInfo);
 		mImageView.setImageBitmap(mCurrentImg);
 	}
 
@@ -601,8 +617,8 @@ public class ImgMainActivity extends Activity implements
 		if (MyAdapter.mSelectedImage.size() > 0) {
 			String picturePath = MyAdapter.mSelectedImage.get(0);
 			mFirstLoadedImg = BitmapFactory.decodeFile(picturePath);
-			mCurrentImg = ImageProcessor.createFinalBitmap(mFirstLoadedImg,
-					m_strWaterMarkInfo);
+			mCurrentImg = ImageProcessor.createFinalBitmap(
+					ImgMainActivity.this, mFirstLoadedImg, m_strWaterMarkInfo);
 			mImageView.setImageBitmap(mCurrentImg);
 		}
 		hListview2.setAdapter(hListViewAdapter2);
@@ -717,8 +733,8 @@ public class ImgMainActivity extends Activity implements
 				loadedImg = ImageLoader.decodeSampledBitmapFromResource(
 						imgPath, 720, 1280);// 缩放图片显示
 
-				savedImg = ImageProcessor.createFinalBitmap(loadedImg,
-						m_strWaterMarkInfo);
+				savedImg = ImageProcessor.createFinalBitmap(
+						ImgMainActivity.this, loadedImg, m_strWaterMarkInfo);
 
 				saveImgsAndOut(savedImg, ImgMainActivity.mMultiImgsSavePath,
 						ImgFileUtils.createFileName());
@@ -991,11 +1007,12 @@ public class ImgMainActivity extends Activity implements
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				MyConfig.setNewColor(mColor);
+				MyConfig.setNewColor(ImgMainActivity.this, mColor);
 				if ((!m_strWaterMarkInfo.isEmpty())
 						&& (mFirstLoadedImg != null)) {
 					mCurrentImg = ImageProcessor.createFinalBitmap(
-							mFirstLoadedImg, m_strWaterMarkInfo);
+							ImgMainActivity.this, mFirstLoadedImg,
+							m_strWaterMarkInfo);
 					mImageView.setImageBitmap(mCurrentImg);
 					mIsImgUpdated = true;
 				}
@@ -1016,6 +1033,8 @@ public class ImgMainActivity extends Activity implements
 			}
 		});
 
+		setColorCheckedButton(MyConfig.getNewColor(ImgMainActivity.this));
+
 	}
 
 	class myColorOnClickListener implements View.OnClickListener {
@@ -1026,6 +1045,56 @@ public class ImgMainActivity extends Activity implements
 
 			changeColor(v);
 
+		}
+	}
+
+	private void setColorCheckedButton(int position) {
+		Iterator iter = mColorMap.entrySet().iterator();
+		int key;
+		int val;
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			key = (Integer) entry.getKey();
+			val = (Integer) entry.getValue();
+			if (val == position) {
+				setViewChecked(myButton_01, key);
+				setViewChecked(myButton_02, key);
+				setViewChecked(myButton_03, key);
+				setViewChecked(myButton_04, key);
+				setViewChecked(myButton_05, key);
+				setViewChecked(myButton_06, key);
+				setViewChecked(myButton_07, key);
+				setViewChecked(myButton_08, key);
+				setViewChecked(myButton_09, key);
+				setViewChecked(myButton_10, key);
+				setViewChecked(myButton_11, key);
+				setViewChecked(myButton_12, key);
+				setViewChecked(myButton_13, key);
+				setViewChecked(myButton_14, key);
+				setViewChecked(myButton_15, key);
+				setViewChecked(myButton_16, key);
+				setViewChecked(myButton_17, key);
+				setViewChecked(myButton_18, key);
+				setViewChecked(myButton_19, key);
+				setViewChecked(myButton_20, key);
+				setViewChecked(myButton_21, key);
+				setViewChecked(myButton_22, key);
+				setViewChecked(myButton_23, key);
+				setViewChecked(myButton_24, key);
+				setViewChecked(myButton_25, key);
+				setViewChecked(myButton_26, key);
+				setViewChecked(myButton_27, key);
+				setViewChecked(myButton_28, key);
+				setViewChecked(myButton_29, key);
+				setViewChecked(myButton_30, key);
+				setViewChecked(myButton_31, key);
+				setViewChecked(myButton_32, key);
+				setViewChecked(myButton_33, key);
+				setViewChecked(myButton_34, key);
+				setViewChecked(myButton_35, key);
+				setViewChecked(myButton_36, key);
+				break;
+			}
 		}
 	}
 
@@ -1105,45 +1174,55 @@ public class ImgMainActivity extends Activity implements
 				android.view.WindowManager.LayoutParams.WRAP_CONTENT,
 				android.view.WindowManager.LayoutParams.WRAP_CONTENT);
 
-		myButton_01 = (ToggleButton) textEntryView.findViewById(R.id.button_01);
-		mColorMap.put(R.id.button_01, 0);
-		myButton_01.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_02 = (ToggleButton) textEntryView.findViewById(R.id.button_02);
-		mColorMap.put(R.id.button_02, 1);
-		myButton_02.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_03 = (ToggleButton) textEntryView.findViewById(R.id.button_03);
-		mColorMap.put(R.id.button_03, 2);
-		myButton_03.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_04 = (ToggleButton) textEntryView.findViewById(R.id.button_04);
-		mColorMap.put(R.id.button_04, 3);
-		myButton_04.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_05 = (ToggleButton) textEntryView.findViewById(R.id.button_05);
-		mColorMap.put(R.id.button_05, 4);
-		myButton_05.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_06 = (ToggleButton) textEntryView.findViewById(R.id.button_06);
-		mColorMap.put(R.id.button_06, 5);
-		myButton_06.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_07 = (ToggleButton) textEntryView.findViewById(R.id.button_07);
-		mColorMap.put(R.id.button_07, 6);
-		myButton_07.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_08 = (ToggleButton) textEntryView.findViewById(R.id.button_08);
-		mColorMap.put(R.id.button_08, 7);
-		myButton_08.setOnClickListener(new MyShezhiOnClickListener());
-		myButton_09 = (ToggleButton) textEntryView.findViewById(R.id.button_09);
-		mColorMap.put(R.id.button_09, 8);
-		myButton_09.setOnClickListener(new MyShezhiOnClickListener());
-		myCancel = (Button) textEntryView.findViewById(R.id.cancel);
-		myCancel.setOnClickListener(new MyShezhiOnClickListener());
-		myConfirm = (Button) textEntryView.findViewById(R.id.confirm);
-		myConfirm.setOnClickListener(new View.OnClickListener() {
+		myButton_011 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_01);
+		mColorMap1.put(R.id.button_01, 0);
+		myButton_011.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_021 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_02);
+		mColorMap1.put(R.id.button_02, 1);
+		myButton_021.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_031 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_03);
+		mColorMap1.put(R.id.button_03, 2);
+		myButton_031.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_041 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_04);
+		mColorMap1.put(R.id.button_04, 3);
+		myButton_041.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_051 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_05);
+		mColorMap1.put(R.id.button_05, 4);
+		myButton_051.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_061 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_06);
+		mColorMap1.put(R.id.button_06, 5);
+		myButton_061.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_071 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_07);
+		mColorMap1.put(R.id.button_07, 6);
+		myButton_071.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_081 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_08);
+		mColorMap1.put(R.id.button_08, 7);
+		myButton_081.setOnClickListener(new MyShezhiOnClickListener());
+		myButton_091 = (ToggleButton) textEntryView
+				.findViewById(R.id.button_09);
+		mColorMap1.put(R.id.button_09, 8);
+		myButton_091.setOnClickListener(new MyShezhiOnClickListener());
+		myCancel1 = (Button) textEntryView.findViewById(R.id.cancel);
+		myCancel1.setOnClickListener(new MyShezhiOnClickListener());
+		myConfirm1 = (Button) textEntryView.findViewById(R.id.confirm);
+		myConfirm1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				MyConfig.setNewPosition(mPosIndex);
+				MyConfig.setNewPosition(ImgMainActivity.this, mPosIndex);
 				if ((!m_strWaterMarkInfo.isEmpty())
 						&& (mFirstLoadedImg != null)) {
 					mCurrentImg = ImageProcessor.createFinalBitmap(
-							mFirstLoadedImg, m_strWaterMarkInfo);
+							ImgMainActivity.this, mFirstLoadedImg,
+							m_strWaterMarkInfo);
 					mImageView.setImageBitmap(mCurrentImg);
 					mIsImgUpdated = true;
 				}
@@ -1154,7 +1233,7 @@ public class ImgMainActivity extends Activity implements
 			}
 		});
 
-		myCancel.setOnClickListener(new View.OnClickListener() {
+		myCancel1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -1165,6 +1244,31 @@ public class ImgMainActivity extends Activity implements
 			}
 		});
 
+		setCheckedButton(MyConfig.getNewPosition(ImgMainActivity.this));
+
+	}
+
+	private void setCheckedButton(int position) {
+		Iterator iter = mColorMap1.entrySet().iterator();
+		int key;
+		int val;
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			key = (Integer) entry.getKey();
+			val = (Integer) entry.getValue();
+			if (val == position) {
+				setViewChecked(myButton_011, key);
+				setViewChecked(myButton_021, key);
+				setViewChecked(myButton_031, key);
+				setViewChecked(myButton_041, key);
+				setViewChecked(myButton_051, key);
+				setViewChecked(myButton_061, key);
+				setViewChecked(myButton_071, key);
+				setViewChecked(myButton_081, key);
+				setViewChecked(myButton_091, key);
+				break;
+			}
+		}
 	}
 
 	class MyShezhiOnClickListener implements View.OnClickListener {
@@ -1175,19 +1279,27 @@ public class ImgMainActivity extends Activity implements
 		}
 	}
 
+	private void setViewChecked(View v, int id) {
+		if (v.getId() == id) {
+			((ToggleButton) v).setChecked(true);
+		} else {
+			((ToggleButton) v).setChecked(false);
+		}
+	}
+
 	private void changePos(View v) {
-		myButton_01.setChecked(false);
-		myButton_02.setChecked(false);
-		myButton_03.setChecked(false);
-		myButton_04.setChecked(false);
-		myButton_05.setChecked(false);
-		myButton_06.setChecked(false);
-		myButton_07.setChecked(false);
-		myButton_08.setChecked(false);
-		myButton_09.setChecked(false);
+		myButton_011.setChecked(false);
+		myButton_021.setChecked(false);
+		myButton_031.setChecked(false);
+		myButton_041.setChecked(false);
+		myButton_051.setChecked(false);
+		myButton_061.setChecked(false);
+		myButton_071.setChecked(false);
+		myButton_081.setChecked(false);
+		myButton_091.setChecked(false);
 
 		((ToggleButton) v).setChecked(true);
-		mPosIndex = mColorMap.get(v.getId());
+		mPosIndex = mColorMap1.get(v.getId());
 	}
 
 }

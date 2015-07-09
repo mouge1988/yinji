@@ -1,4 +1,5 @@
 ﻿package com.vjiazhi.shuiyinwang.utils;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -18,11 +19,11 @@ public class ImageProcessor {
 	final static String WATERMARK_FONT_NAME = "宋体";
 	static float mWaterMarkFontSize = WATERMARK_FONT_SIZE_BASE;
 	final static int WATERMARK_EXTRA_EDGE = 15; // 水印图像，基于文字尺寸再加上一些余量
-	static int mPaddingToEdge = 5; // 页边距性质
+	static int mPaddingToEdge = 15; // 页边距性质
 
 	// 入口参数：src代表源图像，strText为水印文字，isUser是否用户的水印（默认为false）
 	// 出口参数：合成后的图像
-	public static Bitmap createFinalBitmap(Bitmap src, String strText) {
+	public static Bitmap createFinalBitmap(Context context,Bitmap src, String strText) {
 
 		if (src == null) {
 			return null;
@@ -45,7 +46,7 @@ public class ImageProcessor {
 		 * p.setTextSize(WATERMARK_FONT_SIZE); canvasTemp.drawText(strText,
 		 * WATERMARK1_X, WATERMARK1_Y, p);
 		 */
-		p.setColor(MyConfig.getNewColor());
+		p.setColor(MyConfig.getNewColor(context));
 		p.setTypeface(font);
 		p.setTextSize(fTextSize);
 
@@ -73,6 +74,12 @@ public class ImageProcessor {
 		canvasTemp.drawText(strText, 0, nMarkHeight - WATERMARK_EXTRA_EDGE, p);
 		// 水印图像创建end
 
+		
+		//加一层白色背景
+		p.setColor(Color.DKGRAY);
+		float fShadeSize =  mWaterMarkFontSize/20; //默认参考值2.5
+		canvasTemp.drawText(strText,fShadeSize, nMarkHeight - WATERMARK_EXTRA_EDGE +fShadeSize, p);
+		
 		// create the new blank bitmap
 		Bitmap newb = Bitmap.createBitmap(nSrcwidth, nSrcHeight,
 				Config.ARGB_8888);// 创建一个新的和SRC长度宽度一样的位图
@@ -83,7 +90,7 @@ public class ImageProcessor {
 
 		int nWatermarkLeft, nWatermarkTop;
 
-		int nPos = MyConfig.getNewPosition();// 0-8 对应9个位置
+		int nPos = MyConfig.getNewPosition(context);// 0-8 对应9个位置
 
 		switch (nPos) {
 		case 0:

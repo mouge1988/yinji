@@ -5,22 +5,43 @@
     android:background="#ffffff"
     android:paddingBottom="5dp" >
 
-    <TextView
-        android:id="@+id/wenben_layout"
+    <RelativeLayout
+        android:id="@+id/bottom_btn"
         android:layout_width="fill_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentTop="true"
-        android:background="#666666"
-        android:gravity="center"
-        android:text="文本颜色"
-        android:textColor="#fff"
-        android:textSize="18dp" />
+        android:layout_height="wrap_content"
+        android:background="#0a9398" >
+
+        <TextView
+            android:id="@+id/wenben_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:text="文本颜色"
+            android:textColor="#fff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/cancel_selector" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/sure_selector" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/color_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/wenben_layout"
+        android:layout_below="@id/bottom_btn"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -539,35 +560,6 @@
                 android:textOff=""
                 android:textOn="" />
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/bottom_btn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/color_layout"
-        android:layout_margin="5dp"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="fill_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/dialog_button_selector"
-            android:gravity="center"
-            android:layout_marginRight="5dp"
-            android:text="@string/cancel" />
-
-        <Button
-            android:id="@+id/confirm"
-            android:layout_width="fill_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/dialog_button_selector"
-            android:gravity="center"
-            android:text="@string/ok" />
     </LinearLayout>
 
 </RelativeLayout>

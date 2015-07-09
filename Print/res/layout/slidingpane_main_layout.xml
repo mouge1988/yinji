@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true" 
+    android:background="#00000000" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +15,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#403f3f" />
+            android:background="#00000000" />
 
     </LinearLayout>
 
@@ -26,7 +28,8 @@
         <FrameLayout
             android:id="@+id/slidingpane_menu"
             android:layout_width="250dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@drawable/bg2" />
 
         <FrameLayout
             android:id="@+id/slidingpane_content"

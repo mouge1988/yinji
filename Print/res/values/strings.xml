@@ -28,7 +28,7 @@
     <string name="load_img_title">加载图片</string>
     <string name="str_processing">正在加水印...</string>
     <string name="str_syw_test">印记Print测试文字</string>
-    <string name="xiangce">图库</string>
+    <string name="xiangce">印记图库</string>
     <string name="caidan">菜单</string>
   
 </resources>
