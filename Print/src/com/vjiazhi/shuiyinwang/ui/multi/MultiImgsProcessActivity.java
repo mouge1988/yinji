@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.ImgMainActivity;
 import com.vjiazhi.shuiyinwang.ui.multi_image.ImageLoader;
 import com.vjiazhi.shuiyinwang.ui.multi_image.adapter.MyAdapter;

@@ -2,7 +2,7 @@ package com.vjiazhi.shuiyinwang.ui.multi;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.multi.ImgsAdapter.OnItemClickClass;
 import android.annotation.SuppressLint;
 import android.app.Activity;

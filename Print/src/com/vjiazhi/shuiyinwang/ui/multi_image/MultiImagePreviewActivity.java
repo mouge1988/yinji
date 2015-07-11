@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -19,9 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.vjiazhi.shuiyinwang.R;
-import com.vjiazhi.shuiyinwang.ui.multi.MultiImgsProcessActivity;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.multi_image.adapter.MyAdapter;
 import com.vjiazhi.shuiyinwang.utils.L;
 

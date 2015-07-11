@@ -2,16 +2,11 @@ package com.vjiazhi.shuiyinwang.ui.adapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.utils.BitmapUtil;
-import com.vjiazhi.shuiyinwang.utils.L;
-
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.view.LayoutInflater;

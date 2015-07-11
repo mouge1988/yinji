@@ -5,14 +5,11 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.multi_image.ViewHolder;
-import com.vjiazhi.shuiyinwang.utils.L;
 
 public class MyAdapter extends CommonAdapter<String> {
 

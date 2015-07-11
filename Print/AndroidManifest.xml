@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vjiazhi.shuiyinwang"
+    package="com.vjiazhi.yinji"
     android:versionCode="1"
     android:versionName="0.1" >
 
@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.ImgMainActivity"
+            android:name="com.vjiazhi.shuiyinwang.ui.ImgMainActivity"
             android:label="@string/title_activity_img_main"
             android:theme="@android:style/Theme.Holo.NoActionBar" >
             <intent-filter>
@@ -22,13 +22,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.PayDemoActivity"
+            android:name="com.vjiazhi.shuiyinwang.ui.PayDemoActivity"
             android:icon="@drawable/msp_icon"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
         <activity
-            android:name=".ui.AboutAppActivity"
+            android:name="com.vjiazhi.shuiyinwang.ui.AboutAppActivity"
             android:icon="@drawable/msp_icon"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.NoActionBar" >
@@ -45,12 +45,12 @@
         </activity>
         <!-- alipay sdk end -->
         <activity
-            android:name=".ui.multi.ImgFileListActivity"
+            android:name="com.vjiazhi.shuiyinwang.ui.multi.ImgFileListActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
         <activity
-            android:name=".ui.multi.ImgsActivity"
+            android:name="com.vjiazhi.shuiyinwang.ui.multi.ImgsActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
@@ -68,11 +68,43 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity
-            android:name=".ui.PublishedActivity"
+            android:name="com.vjiazhi.shuiyinwang.ui.PublishedActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
+
+        <!-- weixin share -->
+        <activity
+            android:name="com.umeng.socialize.view.ShareActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDialog"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
+           <activity
+            android:name="com.umeng.socialize.weixin.view.WXCallbackActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDialog"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.umeng.socialize.view.CommentActivity"
+            android:configChanges="orientation|keyboard"
+            android:theme="@style/Theme.UMDefault" />
+        <activity
+            android:name="com.umeng.socialize.view.CommentDetail"
+            android:configChanges="orientation|keyboard"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDefault" />
+        <activity
+            android:name="com.umeng.socialize.view.CommentDetailNoMap"
+            android:configChanges="orientation|keyboard"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDefault" />
 
         <!-- umeng Activities. -->
         <activity
@@ -116,6 +148,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Include next permission if you want to allow UIL to cache images on SD card -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 </manifest>

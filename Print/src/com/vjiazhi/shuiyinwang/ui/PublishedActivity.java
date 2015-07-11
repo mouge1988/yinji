@@ -12,8 +12,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
-
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.adapter.GridAdapter;
 import com.vjiazhi.shuiyinwang.ui.multi.MultiImgsProcessActivity;
 import com.vjiazhi.shuiyinwang.ui.multi_image.MultiImageActivity;

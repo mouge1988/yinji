@@ -7,7 +7,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.multi_image.bean.ImageFloder;
 
 public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFloder>

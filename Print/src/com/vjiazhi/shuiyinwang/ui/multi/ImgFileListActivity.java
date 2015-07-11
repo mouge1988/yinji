@@ -2,7 +2,7 @@ package com.vjiazhi.shuiyinwang.ui.multi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;

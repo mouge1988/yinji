@@ -1,7 +1,7 @@
 
 package com.vjiazhi.shuiyinwang.ui.view;
 import com.umeng.update.UmengUpdateAgent;
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.AboutAppActivity;
 import android.app.Fragment;
 import android.content.Intent;

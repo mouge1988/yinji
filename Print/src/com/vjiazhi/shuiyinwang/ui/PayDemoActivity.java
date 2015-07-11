@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,11 +13,11 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
-
 import com.alipay.sdk.app.PayTask;
 import com.vjiazhi.shuiying.alipay.PayResult;
 import com.vjiazhi.shuiying.alipay.SignUtils;
-import com.vjiazhi.shuiyinwang.R;
+
+import com.vjiazhi.yinji.R;
 
 public class PayDemoActivity extends FragmentActivity {
 

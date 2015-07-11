@@ -18,7 +18,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,14 +29,12 @@ import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 import com.vjiazhi.shuiyinwang.ui.ImgMainActivity;
 import com.vjiazhi.shuiyinwang.ui.multi_image.ListImageDirPopupWindow.OnImageDirSelected;
 import com.vjiazhi.shuiyinwang.ui.multi_image.adapter.MyAdapter;
 import com.vjiazhi.shuiyinwang.ui.multi_image.adapter.MyAdapter.AdapterItemListener;
 import com.vjiazhi.shuiyinwang.ui.multi_image.bean.ImageFloder;
-import com.vjiazhi.shuiyinwang.utils.L;
 
 public class MultiImageActivity extends Activity implements OnImageDirSelected,
 		AdapterItemListener,

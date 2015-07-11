@@ -2,23 +2,15 @@ package com.vjiazhi.shuiyinwang.ui.multi;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-import com.vjiazhi.shuiyinwang.R;
-
+import com.vjiazhi.yinji.R;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 
 public class ImgsAdapter extends BaseAdapter {

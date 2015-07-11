@@ -10,12 +10,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import android.R.color;
 import android.app.FragmentTransaction;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
-import com.vjiazhi.shuiyinwang.R;
+import com.umeng.socialize.bean.RequestType;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.SocializeEntity;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.controller.listener.SocializeListeners.SnsPostListener;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
+import com.umeng.socialize.weixin.media.CircleShareContent;
+import com.umeng.socialize.weixin.media.WeiXinShareContent;
+import com.vjiazhi.yinji.R;
+import com.vjiazhi.shuiyinwang.ui.adapter.GridAdapter;
+import com.vjiazhi.shuiyinwang.ui.adapter.GridViewAdapter;
 import com.vjiazhi.shuiyinwang.ui.adapter.HorizontalListViewAdapter;
 import com.vjiazhi.shuiyinwang.ui.adapter.HorizontalOutListViewAdapter;
 import com.vjiazhi.shuiyinwang.ui.multi_image.ImageLoader;
@@ -23,18 +34,17 @@ import com.vjiazhi.shuiyinwang.ui.multi_image.MultiImageActivity;
 import com.vjiazhi.shuiyinwang.ui.multi_image.adapter.MyAdapter;
 import com.vjiazhi.shuiyinwang.utils.ImageProcessor;
 import com.vjiazhi.shuiyinwang.utils.ImgFileUtils;
-import com.vjiazhi.shuiyinwang.utils.L;
 import com.vjiazhi.shuiyinwang.utils.LogPrint;
 import com.vjiazhi.shuiyinwang.utils.MyConfig;
 import com.vjiazhi.shuiyinwang.widgets.ZoomableImageView;
 import android.support.v4.widget.SlidingPaneLayout;
-import android.support.v4.widget.SlidingPaneLayout.PanelSlideListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.os.storage.StorageManager;
 import android.provider.MediaStore;
@@ -66,6 +76,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -502,6 +513,7 @@ public class ImgMainActivity extends Activity implements
 			@Override
 			public void onClick(View arg0) {
 				// 分享图片到微信朋友圈
+				showShareDialog();
 			}
 		});
 		m_layText = (Button) contentView.findViewById(R.id.text);
@@ -594,6 +606,160 @@ public class ImgMainActivity extends Activity implements
 		});
 
 		initViews();
+	}
+
+	/******************************************************
+	 * 下面是分享图片的代码 *********************************
+	 */
+	AlertDialog mDlgChooseShare = null;
+
+	private void showShareDialog() {
+		mDlgChooseShare = new AlertDialog.Builder(this).setNegativeButton(
+				android.R.string.cancel, null).create();
+		Window windowDlg = mDlgChooseShare.getWindow();
+
+		// 使用自定义的网格布局
+		String[] name = { "微信好友", "微信朋友圈", "更多方式" };
+
+		int[] iconarray = { R.drawable.umeng_socialize_wechat,
+				R.drawable.umeng_socialize_wxcircle, R.drawable.logo_more };
+
+		LayoutInflater factory = LayoutInflater.from(mContext);
+		View view = factory.inflate(R.layout.share_alert_layout, null);
+		GridView grView = (GridView) view
+				.findViewById(R.id.main_menu_grid_view);
+
+		GridViewAdapter gridAdapter = new GridViewAdapter(this, name, iconarray);
+		grView.setAdapter(gridAdapter);
+		grView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				shareCurrent(position);
+			}
+		});
+
+		windowDlg
+				.setType(android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		mDlgChooseShare.setView(view);
+		windowDlg.setGravity(Gravity.BOTTOM);
+		mDlgChooseShare.show();
+	}
+
+	private void shareCurrent(int which) {
+		MobclickAgent.onEvent(this, "share_event");
+		final UMSocialService mController = UMServiceFactory
+				.getUMSocialService("com.umeng.share", RequestType.SOCIAL);
+
+		String appID = "wx4e79aee91524b279";
+		String appSecret = "6419aaed2e10049d1304c0c72d1267b1";
+
+		if (which == 0) {
+
+			// 添加微信平台 UMWXHandler
+			UMWXHandler wxHandler = new UMWXHandler(this, appID, appSecret);
+			wxHandler.setToCircle(false);
+			wxHandler.addToSocialSDK();
+
+			// 设置微信好友分享内容
+			WeiXinShareContent weixinContent = new WeiXinShareContent(); // 设置分享文字
+			weixinContent.setTitle(mCurrTitle); //
+			// weixinContent.setTargetUrl(mStrImageUrl);
+
+			UMImage uMImgBitmap = new UMImage(this, mCurrentImg);
+			weixinContent.setShareImage(uMImgBitmap);
+			mController.setShareMedia(weixinContent);
+
+			mController.postShare(this, SHARE_MEDIA.WEIXIN,
+					new SnsPostListener() {
+
+						@Override
+						public void onComplete(SHARE_MEDIA arg0, int arg1,
+								SocializeEntity arg2) {
+						}
+
+						@Override
+						public void onStart() {
+						}
+					});
+
+		} else if (which == 1) {// 朋友圈
+			UMWXHandler wxCircleHandler = new UMWXHandler(this, appID,
+					appSecret);
+			wxCircleHandler.setToCircle(true);
+			wxCircleHandler.addToSocialSDK();
+
+			// 设置微信朋友圈分享内容
+			// String mShareContent = getShortTextFromData();
+			CircleShareContent circleMedia = new CircleShareContent();
+			// circleMedia.setShareContent(mShareContent);
+			// 设置朋友圈title
+			circleMedia.setTitle(mCurrTitle);
+			UMImage uMImgBitmap = new UMImage(this, mCurrentImg);
+			circleMedia.setShareImage(uMImgBitmap);
+			// circleMedia.setShareImage(new UMImage().set)
+			mController.setShareMedia(circleMedia);
+
+			mController.postShare(this, SHARE_MEDIA.WEIXIN_CIRCLE,
+					new SnsPostListener() {
+
+						@Override
+						public void onComplete(SHARE_MEDIA arg0, int arg1,
+								SocializeEntity arg2) {
+						}
+
+						@Override
+						public void onStart() {
+						}
+					});
+		} else {// 使用其他分享方式
+			showWaitingDialog();
+			new Handler().postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						Intent inSend = new Intent(Intent.ACTION_SEND);
+						String filePath = "";
+
+						filePath = saveCurrentBitmap(false);// 这里保存不提示
+
+						hideWaitingDialog();
+
+						if (!filePath.isEmpty()) {
+							File file = new File(filePath);
+							if (file != null && file.exists() && file.isFile()) {
+								inSend.setType("image/jpg");
+								Uri u = Uri.fromFile(file);
+								inSend.putExtra(Intent.EXTRA_STREAM, u);
+							}
+
+						}
+						// 当用户选择短信时使用sms_body取得文字
+						inSend.putExtra(Intent.EXTRA_SUBJECT, mCurrTitle);
+						inSend.putExtra("sms_body", mCurrTitle + "\n"
+								+ mBlogUrl + "\n【来自秦刚观点】");
+						inSend.putExtra(Intent.EXTRA_TEXT, mCurrTitle + "\n"
+								+ mBlogUrl + "\n【来自秦刚观点】");
+						inSend.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						inSend.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						try {
+							startActivity(Intent
+									.createChooser(inSend, "分享自印记。"));
+						} catch (android.content.ActivityNotFoundException ex) {
+							// if no app handles it, do nothing
+						}
+
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}, 100);
+
+		}
+		mDlgChooseShare.dismiss();
 	}
 
 	// 设置默认的图片

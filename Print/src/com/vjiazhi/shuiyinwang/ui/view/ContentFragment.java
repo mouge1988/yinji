@@ -11,7 +11,7 @@
  */
 package com.vjiazhi.shuiyinwang.ui.view;
 
-import com.vjiazhi.shuiyinwang.R;
+import com.vjiazhi.yinji.R;
 
 import android.app.Fragment;
 import android.os.Bundle;

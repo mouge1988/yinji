@@ -1,19 +1,10 @@
 package com.vjiazhi.shuiyinwang.ui.multi;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-
-
-import com.vjiazhi.shuiyinwang.R;
-
+import com.vjiazhi.yinji.R;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
